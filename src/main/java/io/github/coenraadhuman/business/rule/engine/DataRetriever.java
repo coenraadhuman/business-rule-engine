@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import io.github.coenraadhuman.business.rule.engine.common.LogUtility;
 import io.github.coenraadhuman.business.rule.engine.data.DataRetrieverResult;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -33,7 +34,7 @@ public abstract class DataRetriever<Argument> implements Runnable {
     @Setter(AccessLevel.PROTECTED)
     private Argument argument;
 
-    protected void reportRuleResult(final RuleResult ruleResult) {
+    protected void reportDataRetrieverResult(final RuleResult ruleResult) {
         this.dataRetrieverResults.add(ruleResult);
     }
 
@@ -48,12 +49,10 @@ public abstract class DataRetriever<Argument> implements Runnable {
             while (dataRetrievers.size() != dataRetrieverResults.size()) {
                 if (this.shouldStop()) {
                     this.engine.panic();
-                } else {
-                    System.out.println("Waiting for assigned data retrievers to finish.");
                 }
             }
         } else {
-            System.out.println("No data retrievers assigned to be executed.");
+            LogUtility.printMessage("No data retrievers assigned to be executed.");
         }
     }
 
@@ -63,10 +62,10 @@ public abstract class DataRetriever<Argument> implements Runnable {
 
     protected void sendCompletedMessage(final DataRetrieverResult ruleResult) {
         if (Objects.nonNull(parentDataRetriever)) {
-            parentDataRetriever.reportRuleResult(ruleResult);
+            parentDataRetriever.reportDataRetrieverResult(ruleResult);
         } else {
             if (Objects.nonNull(parentRule)) {
-                parentRule.sendCompletedMessage(ruleResult);
+                parentRule.reportDataRetrieverResult(ruleResult);
             } else {
                 throw new RuntimeException("Result could not be reported.");
             }

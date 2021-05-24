@@ -13,7 +13,7 @@ import io.github.coenraadhuman.implementation.rules.normal.TestValidationValidRu
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class AbstractBusinessRuleEngineTest extends AbstractBusinessRuleEngine<TestArgument> {
+public class ValidRuleTest extends AbstractBusinessRuleEngine<TestArgument> {
 
     @Override
     protected List<AbstractRule<TestArgument>> setEngineRules() {
